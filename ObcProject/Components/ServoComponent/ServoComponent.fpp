@@ -26,7 +26,7 @@ module ObcProject {
         event AngleSet(angle: F32) severity activity high format "Angle {}"
 
         # @ Example port: receiving calls from the rate group
-        # sync input port run: Svc.Sched
+        async input port angleIn: ServoAngle
 
         # @ Example parameter
         # param PARAMETER_NAME: U32

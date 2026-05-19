@@ -51,6 +51,16 @@ class ServoComponent final : public ServoComponentComponentBase {
 
   private:
     // ----------------------------------------------------------------------
+    // Handler implementations for typed input ports
+    // ----------------------------------------------------------------------
+
+    //! Handler implementation for angleIn
+    void angleIn_handler(FwIndexType portNum,  //!< The port number
+                         F32 angle             //!< the result of the operation
+                         ) override;
+
+  private:
+    // ----------------------------------------------------------------------
     // Handler implementations for commands
     // ----------------------------------------------------------------------
 
@@ -63,7 +73,7 @@ class ServoComponent final : public ServoComponentComponentBase {
                          ) override;
   
   private:
-    ServoDriver m_servo;  // GPIO pin 18 (PWM0)
+    ServoDriver m_servo;
 };
 
 }  // namespace ObcProject

@@ -98,9 +98,44 @@ int ServoDriver::status() const
 ServoComponent::ServoComponent(const char* const compName, int gpioPin)
     : ServoComponentComponentBase(compName)
     , m_servo(gpioPin)
-{}
+{
+    const int angle = 90;
+    const int pigpioStatus = m_servo.setAngle(angle);
+    if (pigpioStatus < 0) {
+        this->log_WARNING_HI_PigpioError(pigpioStatus);
+    } else {
+        this->tlmWrite_Angle(angle);
+        this->log_ACTIVITY_HI_AngleSet(angle);
+    }
+}
 
 ServoComponent ::~ServoComponent() {}
+
+// ----------------------------------------------------------------------
+// Handler implementations for typed input ports
+// ----------------------------------------------------------------------
+
+void ServoComponent ::angleIn_handler(FwIndexType portNum, F32 angle) {
+    if (angle < 0.0f || angle > 180.0f) {
+        this->log_WARNING_HI_InvalidAngle(angle);
+        return;
+    }
+
+    if (!m_servo.isReady()) {
+        this->log_WARNING_HI_PigpioError(m_servo.status());
+        return;
+    }
+
+    const int pigpioStatus = m_servo.setAngle(angle);
+    if (pigpioStatus < 0) {
+        this->log_WARNING_HI_PigpioError(pigpioStatus);
+        return;
+    }
+
+    this->tlmWrite_Angle(angle);
+
+    this->log_ACTIVITY_HI_AngleSet(angle);
+}
 
 // ----------------------------------------------------------------------
 // Handler implementations for commands
